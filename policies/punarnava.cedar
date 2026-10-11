@@ -164,16 +164,42 @@ when { principal.status == "active" };
 @id("admin")
 permit (principal in Punarnava::Role::"admin", action, resource);
 
-// Suspended accounts keep only their own profile and inbox.
+// Suspended accounts keep their own profile and inbox, and what anyone can see without signing in.
 @id("suspended")
 forbid (principal, action, resource)
 when {
   principal.status == "suspended" &&
   !(action in [
+    Punarnava::Action::"GET /public/catalog",
+    Punarnava::Action::"GET /public/impact",
+    Punarnava::Action::"GET /public/passport/:pid",
+    Punarnava::Action::"GET /public/owner/:jobId",
+    Punarnava::Action::"POST /public/owner/:jobId/decision",
+    Punarnava::Action::"POST /public/owner/:jobId/confirm",
+    Punarnava::Action::"POST /public/owner/:jobId/followup",
+    Punarnava::Action::"POST /public/owner/:jobId/green",
+    Punarnava::Action::"GET /public/market",
+    Punarnava::Action::"GET /public/market/:id",
+    Punarnava::Action::"POST /public/market/:id/interest",
+    Punarnava::Action::"GET /public/scores",
+    Punarnava::Action::"GET /public/rates",
     Punarnava::Action::"GET /api/me",
     Punarnava::Action::"PUT /api/me",
     Punarnava::Action::"GET /api/notifications",
-    Punarnava::Action::"POST /api/notifications/read"
+    Punarnava::Action::"POST /api/notifications/read",
+    Punarnava::Action::"POST /public/tts",
+    Punarnava::Action::"POST /public/owner/:jobId/uploads",
+    Punarnava::Action::"POST /public/owner/:jobId/stt",
+    Punarnava::Action::"GET /public/owner/:jobId/stt/:jobName",
+    Punarnava::Action::"GET /public/rewards/rules",
+    Punarnava::Action::"POST /public/requests/match",
+    Punarnava::Action::"POST /public/requests/uploads",
+    Punarnava::Action::"POST /public/requests",
+    Punarnava::Action::"GET /public/requests/:id",
+    Punarnava::Action::"POST /public/requests/:id/cancel",
+    Punarnava::Action::"GET /public/green/:cid",
+    Punarnava::Action::"POST /public/green/:cid/read",
+    Punarnava::Action::"GET /public/search"
   ])
 };
 

@@ -22,8 +22,9 @@ export function loadConfig(overrides = {}) {
   const bool = (v, d) => (v == null || v === '' ? d : /^(1|true|yes|on)$/i.test(String(v)));
   const pick = (v, allowed, d) => (allowed.includes(v) ? v : d);
   return {
-    port: Number(e.PN_PORT || 8787),
-    host: e.PN_HOST || '127.0.0.1',
+    port: Number(e.PORT || e.PN_PORT || 8787),
+    host: e.PN_HOST || (e.PORT ? '0.0.0.0' : '127.0.0.1'),
+    
     dataDir: path.resolve(ROOT, e.PN_DATA_DIR || '.local-data'),
     store: pick(e.PN_STORE, ['file', 'localstack'], 'file'),
     files: pick(e.PN_FILES, ['disk', 'localstack'], 'disk'),

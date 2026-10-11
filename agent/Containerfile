@@ -1,0 +1,10 @@
+# Optional: run the agent service in a container (finch build -t punarnava-agent agent/).
+# By default scripts/local/agent.sh runs it from a Python virtualenv on the host, next to Ollama.
+FROM python:3.12-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY service.py .
+ENV AGENT_HOST=0.0.0.0 AGENT_PORT=8790
+EXPOSE 8790
+CMD ["python", "service.py"]

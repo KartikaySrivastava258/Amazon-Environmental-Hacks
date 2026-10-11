@@ -1,0 +1,44 @@
+{
+  "name": "punarnava-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Punarnava: repair-first circular economy for India. Shared core business logic, the local Build It server, and optional cloud handlers.",
+  "scripts": {
+    "local": "node src/local/server.js",
+    "local:check": "node src/local/cli.js check",
+    "local:status": "node src/local/cli.js status",
+    "local:seed": "node src/local/cli.js seed",
+    "local:reset": "node src/local/cli.js reset",
+    "local:reindex": "node src/local/cli.js reindex",
+    "cedar:gen": "node ../scripts/local/gen-cedar.mjs",
+    "test": "node test/run-tests.js && node test/circular.test.js && node test/demo.test.js && node test/cedar.test.js && node test/local.test.js && bash ../scripts/sync-core.sh && node test/speech-env.test.js && node ../scripts/check-i18n.mjs",
+    "test:core": "node test/run-tests.js && node test/circular.test.js && node test/demo.test.js",
+    "test:local": "node test/cedar.test.js && node test/local.test.js",
+    "test:speech": "bash ../scripts/sync-core.sh && node test/speech-env.test.js",
+    "i18n:check": "node ../scripts/check-i18n.mjs",
+    "i18n:export": "node ../scripts/i18n-export.mjs",
+    "local:seed-demo": "node src/local/cli.js reset"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "3.600.0",
+    "@aws-sdk/client-s3": "3.600.0",
+    "@aws-sdk/lib-dynamodb": "3.600.0",
+    "@aws-sdk/s3-request-presigner": "3.600.0",
+    "@cedar-policy/cedar-wasm": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "optionalDependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "3.600.0",
+    "@aws-sdk/client-eventbridge": "3.600.0",
+    "@aws-sdk/client-lambda": "3.600.0",
+    "@aws-sdk/client-polly": "3.600.0",
+    "@aws-sdk/client-sagemaker-runtime": "3.600.0",
+    "@aws-sdk/client-scheduler": "3.600.0",
+    "@aws-sdk/client-sfn": "3.600.0",
+    "@aws-sdk/client-sns": "3.600.0",
+    "@aws-sdk/client-transcribe": "3.600.0"
+  }
+}

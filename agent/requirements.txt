@@ -1,0 +1,3 @@
+# Strands Agents SDK with the Ollama model provider (a local model; nothing hosted or paid).
+strands-agents[ollama]>=1.0.0
+pydantic>=2.6

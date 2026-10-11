@@ -1,0 +1,10 @@
+.aws-sam/
+node_modules/
+frontend/core/
+*.zip
+.DS_Store
+# Local Build It
+.local-data/
+.env
+agent/.venv/
+__pycache__/

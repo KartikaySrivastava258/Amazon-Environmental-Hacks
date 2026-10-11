@@ -1,0 +1,42 @@
+# OpenSearch on Amazon Corretto 21 (image built from local/opensearch/Containerfile).
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: opensearch
+spec:
+  serviceName: opensearch
+  replicas: 1
+  selector: { matchLabels: { app: opensearch } }
+  template:
+    metadata:
+      labels: { app: opensearch }
+    spec:
+      securityContext: { fsGroup: 1000 }
+      containers:
+        - name: opensearch
+          image: punarnava/opensearch-corretto:2.17.1
+          imagePullPolicy: Never
+          ports: [{ containerPort: 9200, name: http }]
+          env:
+            - { name: discovery.type, value: single-node }
+            - { name: DISABLE_SECURITY_PLUGIN, value: "true" }     # cluster-internal only (ClusterIP service)
+            - { name: DISABLE_INSTALL_DEMO_CONFIG, value: "true" }
+            - { name: OPENSEARCH_JAVA_OPTS, value: "-Xms512m -Xmx512m" }
+          volumeMounts: [{ name: data, mountPath: /usr/share/opensearch/data }]
+          readinessProbe: { httpGet: { path: /_cluster/health, port: http }, periodSeconds: 10, failureThreshold: 30 }
+          resources:
+            requests: { cpu: 250m, memory: 1Gi }
+            limits: { memory: 1536Mi }
+  volumeClaimTemplates:
+    - metadata: { name: data }
+      spec:
+        accessModes: [ReadWriteOnce]
+        resources: { requests: { storage: 2Gi } }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: opensearch
+spec:
+  selector: { app: opensearch }
+  ports: [{ port: 9200, targetPort: http, name: http }]

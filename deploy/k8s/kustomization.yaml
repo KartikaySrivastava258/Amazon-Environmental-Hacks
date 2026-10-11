@@ -1,0 +1,11 @@
+# Punarnava on Kubernetes (an EKS Anywhere / EKS Distro cluster): kubectl apply -k deploy/k8s
+# Images are built with Finch and loaded into the cluster nodes by scripts/local/k8s-up.sh.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: punarnava
+resources:
+  - namespace.yaml
+  - app.yaml
+  - localstack.yaml
+  - opensearch.yaml
+  - agent.yaml

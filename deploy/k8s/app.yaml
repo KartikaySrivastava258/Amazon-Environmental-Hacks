@@ -1,0 +1,75 @@
+# The app server. Records in LocalStack DynamoDB; workflow state, photos and voice notes on a volume (served
+# through signed URLs by the app itself, so the browser never needs to reach LocalStack).
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  PN_RUNTIME: kubernetes
+  PN_STORE: localstack
+  PN_FILES: disk
+  PN_AUTHZ: cedar
+  PN_SEARCH: opensearch
+  PN_AGENT: strands
+  LOCALSTACK_URL: http://localstack:4566
+  OPENSEARCH_URL: http://opensearch:9200
+  AGENT_URL: http://agent:8790
+  PN_TOOLS_BASE: http://app:8787
+  PN_DEV_TOOLS: "false"
+  PN_SEED_SYNTHETIC: "6000"
+  AWS_REGION: ap-south-1
+  AWS_ACCESS_KEY_ID: test
+  AWS_SECRET_ACCESS_KEY: test
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: app-data
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+  labels: { app: punarnava-app }
+spec:
+  replicas: 1                       # one writer: state lives on a ReadWriteOnce volume
+  strategy: { type: Recreate }
+  selector: { matchLabels: { app: punarnava-app } }
+  template:
+    metadata:
+      labels: { app: punarnava-app }
+    spec:
+      securityContext: { runAsNonRoot: true, runAsUser: 1000, fsGroup: 1000 }
+      containers:
+        - name: app
+          image: punarnava/app:local
+          imagePullPolicy: Never
+          ports: [{ containerPort: 8787, name: http }]
+          envFrom:
+            - configMapRef: { name: app-config }
+            - configMapRef: { name: cluster-info, optional: true }    # PN_K8S_DISTRO, written by k8s-up.sh
+          env:
+            - name: PN_SESSION_SECRET
+              valueFrom: { secretKeyRef: { name: app-secret, key: session-secret } }
+          volumeMounts: [{ name: data, mountPath: /data }]
+          readinessProbe: { httpGet: { path: /config.js, port: http }, periodSeconds: 5, failureThreshold: 60 }
+          livenessProbe: { httpGet: { path: /config.js, port: http }, initialDelaySeconds: 60, periodSeconds: 20 }
+          resources:
+            requests: { cpu: 100m, memory: 256Mi }
+            limits: { memory: 768Mi }
+      volumes:
+        - name: data
+          persistentVolumeClaim: { claimName: app-data }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+spec:
+  selector: { app: punarnava-app }
+  ports: [{ port: 8787, targetPort: http, name: http }]

@@ -1,0 +1,40 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Punarnava API for `sam local start-api` / `sam local invoke` ONLY (never deployed). Runs the same core router as
+  the local Node server, against LocalStack DynamoDB and S3, with Cedar authorization and local session tokens.
+  Start LocalStack first (scripts/local/start.sh), then: scripts/local/sam-smoke.sh
+
+Globals:
+  Function:
+    Runtime: nodejs22.x
+    Timeout: 30
+    MemorySize: 512
+    Environment:
+      Variables:
+        PN_STORE: localstack
+        PN_FILES: localstack
+        PN_AUTHZ: cedar
+        PN_SEARCH: "off"
+        PN_AGENT: "off"
+        LOCALSTACK_URL: http://localstack:4566     # the LocalStack container on the shared network (--docker-network punarnava_default)
+        PN_TABLE: punarnava-local
+        PN_BUCKET: punarnava-local
+        PN_POLICY_FILE: policies/punarnava.cedar
+        PN_SESSION_SECRET: ""                      # set with --env-vars (sam-smoke.sh passes the local server's secret)
+        AWS_REGION: ap-south-1
+        AWS_ACCESS_KEY_ID: test
+        AWS_SECRET_ACCESS_KEY: test
+
+Resources:
+  LocalApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ..
+      Handler: backend/src/handlers/local-api.handler
+      Events:
+        Api:
+          Type: HttpApi
+          Properties:
+            Path: /{proxy+}
+            Method: ANY

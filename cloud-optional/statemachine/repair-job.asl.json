@@ -1,0 +1,75 @@
+{
+  "Comment": "Punarnava: the life of one repair job. Pauses twice for people: the owner's decision and the technician's repair.",
+  "StartAt": "BuildOptions",
+  "States": {
+    "BuildOptions": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": { "FunctionName": "${WorkflowFunctionArn}", "Payload": { "task": "buildOptions", "jobId.$": "$.jobId" } },
+      "ResultSelector": { "recommended.$": "$.Payload.recommended" },
+      "ResultPath": "$.build",
+      "Retry": [{ "ErrorEquals": ["Lambda.ServiceException", "Lambda.TooManyRequestsException", "Lambda.SdkClientException"], "IntervalSeconds": 2, "MaxAttempts": 3, "BackoffRate": 2 }],
+      "Next": "WaitForOwnerDecision"
+    },
+    "WaitForOwnerDecision": {
+      "Type": "Task",
+      "Comment": "Owner gets a link. The API calls SendTaskSuccess with { option, consent } when they choose.",
+      "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+      "Parameters": { "FunctionName": "${WorkflowFunctionArn}", "Payload": { "task": "notifyOwner", "jobId.$": "$.jobId", "taskToken.$": "$$.Task.Token" } },
+      "TimeoutSeconds": ${OwnerTimeoutSeconds},
+      "ResultPath": "$.decision",
+      "Catch": [{ "ErrorEquals": ["States.Timeout"], "ResultPath": "$.error", "Next": "CloseNoDecision" }],
+      "Next": "ApplyDecision"
+    },
+    "ApplyDecision": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": { "FunctionName": "${WorkflowFunctionArn}", "Payload": { "task": "applyDecision", "jobId.$": "$.jobId", "decision.$": "$.decision" } },
+      "ResultSelector": { "status.$": "$.Payload.status" },
+      "ResultPath": "$.applied",
+      "Next": "IsRepair"
+    },
+    "IsRepair": {
+      "Type": "Choice",
+      "Choices": [
+        { "Or": [
+          { "Variable": "$.decision.option", "StringEquals": "repair_new" },
+          { "Variable": "$.decision.option", "StringEquals": "repair_reused" }
+        ], "Next": "WaitForRepair" }
+      ],
+      "Default": "Done"
+    },
+    "WaitForRepair": {
+      "Type": "Task",
+      "Comment": "Technician marks the repair complete; the API calls SendTaskSuccess with the repair details.",
+      "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+      "Parameters": { "FunctionName": "${WorkflowFunctionArn}", "Payload": { "task": "registerRepair", "jobId.$": "$.jobId", "taskToken.$": "$$.Task.Token" } },
+      "TimeoutSeconds": ${RepairTimeoutSeconds},
+      "ResultPath": "$.repair",
+      "Catch": [{ "ErrorEquals": ["States.Timeout"], "ResultPath": "$.error", "Next": "CloseRepairTimeout" }],
+      "Next": "CompleteRepair"
+    },
+    "CompleteRepair": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": { "FunctionName": "${WorkflowFunctionArn}", "Payload": { "task": "completeRepair", "jobId.$": "$.jobId", "repair.$": "$.repair" } },
+      "ResultPath": null,
+      "Next": "Done"
+    },
+    "CloseNoDecision": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": { "FunctionName": "${WorkflowFunctionArn}", "Payload": { "task": "closeNoDecision", "jobId.$": "$.jobId" } },
+      "ResultPath": null,
+      "Next": "Done"
+    },
+    "CloseRepairTimeout": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": { "FunctionName": "${WorkflowFunctionArn}", "Payload": { "task": "closeRepairTimeout", "jobId.$": "$.jobId" } },
+      "ResultPath": null,
+      "Next": "Done"
+    },
+    "Done": { "Type": "Succeed" }
+  }
+}

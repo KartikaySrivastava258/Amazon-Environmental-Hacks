@@ -1,0 +1,22 @@
+// Search page (js/views/search.js).
+export default {
+  'search.title': ['Search', 'खोजें', 'शोधा', 'খুঁজুন', 'தேடல்'],
+  'search.label': ['Search', 'खोजें', 'शोधा', 'খুঁজুন', 'தேடு'],
+  'search.placeholder': ['Model, product, or passport ID', 'मॉडल, सामान या पासपोर्ट ID', 'मॉडेल, वस्तू किंवा पासपोर्ट ID', 'মডেল, জিনিস বা পাসপোর্ট ID', 'மாடல், பொருள் அல்லது கடவுச்சீட்டு ID'],
+  'search.placeholderTech': ['Part, model, listing or passport ID', 'पार्ट, मॉडल, बिक्री या पासपोर्ट ID', 'पार्ट, मॉडेल, विक्री किंवा पासपोर्ट ID', 'যন্ত্রাংশ, মডেল, বিক্রি বা পাসপোর্ট ID', 'பாகம், மாடல், விற்பனை அல்லது கடவுச்சீட்டு ID'],
+  'search.go': ['Search', 'खोजें', 'शोधा', 'খুঁজুন', 'தேடு'],
+  'search.searching': ['Searching…', 'खोज रहे हैं…', 'शोधत आहे…', 'খোঁজা হচ্ছে…', 'தேடுகிறது…'],
+  'search.intro': ['Find refurbished products and product models in any language, or open a product passport by its ID.', 'किसी भी भाषा में रिफर्बिश सामान और मॉडल खोजें, या ID से प्रोडक्ट पासपोर्ट खोलें।', 'कोणत्याही भाषेत रिफर्बिश वस्तू आणि मॉडेल शोधा, किंवा ID ने वस्तू पासपोर्ट उघडा.', 'যেকোনো ভাষায় রিফার্বিশ করা জিনিস ও মডেল খুঁজুন, বা ID দিয়ে প্রোডাক্ট পাসপোর্ট খুলুন।', 'எந்த மொழியிலும் சீரமைக்கப்பட்ட பொருட்களையும் மாடல்களையும் தேடுங்கள், அல்லது ID மூலம் பொருள் கடவுச்சீட்டைத் திறங்கள்.'],
+  'search.introTech': ['Also searches the Parts Exchange: for example "door lock WM-7" or "मोटर".', 'पार्ट्स बाज़ार में भी खोजता है: जैसे "door lock WM-7" या "मोटर"।', 'पार्ट्स बाजारातही शोधते: उदा. "door lock WM-7" किंवा "मोटर".', 'পার্টস বাজারেও খোঁজে: যেমন "door lock WM-7" বা "মোটর"।', 'பாகச் சந்தையிலும் தேடும்: உதாரணமாக "door lock WM-7" அல்லது "மோட்டார்".'],
+  'search.engine.os': ['Results from the OpenSearch index.', 'नतीजे OpenSearch इंडेक्स से।', 'निकाल OpenSearch इंडेक्समधून.', 'ফলাফল OpenSearch ইনডেক্স থেকে।', 'முடிவுகள் OpenSearch குறியீட்டிலிருந்து.'],
+  'search.engine.fallback.notConfigured': ['Simple search (OpenSearch is not set up here).', 'साधारण खोज (यहाँ OpenSearch नहीं लगा है)।', 'साधा शोध (येथे OpenSearch सेट केलेले नाही).', 'সাধারণ খোঁজ (এখানে OpenSearch চালু নেই)।', 'எளிய தேடல் (இங்கே OpenSearch அமைக்கப்படவில்லை).'],
+  'search.engine.fallback.offline': ['Simple search: OpenSearch is offline right now.', 'साधारण खोज: अभी OpenSearch बंद है।', 'साधा शोध: आत्ता OpenSearch बंद आहे.', 'সাধারণ খোঁজ: এখন OpenSearch বন্ধ।', 'எளிய தேடல்: இப்போது OpenSearch இயங்கவில்லை.'],
+  'search.none': ['Nothing found for "{q}".', '"{q}" के लिए कुछ नहीं मिला।', '"{q}" साठी काहीही सापडले नाही.', '"{q}"-এর জন্য কিছু পাওয়া যায়নি।', '"{q}" க்கு எதுவும் கிடைக்கவில்லை.'],
+  'search.noneHint': ['Try a model number, a part name or a product type.', 'मॉडल नंबर, पार्ट का नाम या सामान का प्रकार आज़माएँ।', 'मॉडेल क्रमांक, पार्टचे नाव किंवा वस्तूचा प्रकार वापरून पहा.', 'মডেল নম্বর, যন্ত্রাংশের নাম বা জিনিসের ধরন দিয়ে দেখুন।', 'மாடல் எண், பாகத்தின் பெயர் அல்லது பொருள் வகையை முயலுங்கள்.'],
+  'search.passport': ['Product passport', 'प्रोडक्ट पासपोर्ट', 'वस्तू पासपोर्ट', 'প্রোডাক্ট পাসপোর্ট', 'பொருள் கடவுச்சீட்டு'],
+  'search.parts': ['Parts ({n})', 'पार्ट ({n})', 'पार्ट ({n})', 'যন্ত্রাংশ ({n})', 'பாகங்கள் ({n})'],
+  'search.listings': ['Refurbished on ReLife ({n})', 'ReLife पर रिफर्बिश ({n})', 'ReLife वर रिफर्बिश ({n})', 'ReLife-এ রিফার্বিশ ({n})', 'ReLife இல் சீரமைக்கப்பட்டவை ({n})'],
+  'search.models': ['Product models ({n})', 'प्रोडक्ट मॉडल ({n})', 'वस्तू मॉडेल ({n})', 'প্রোডাক্ট মডেল ({n})', 'பொருள் மாடல்கள் ({n})'],
+  'search.warranty': ['{n}-month warranty', '{n} महीने की वारंटी', '{n} महिन्यांची वॉरंटी', '{n} মাসের ওয়ারেন্টি', '{n} மாத உத்தரவாதம்'],
+  'search.seeScores': ['See durability and repairability', 'टिकाऊपन और मरम्मत की आसानी देखें', 'टिकाऊपणा आणि दुरुस्तीची सोय पाहा', 'টেকসইতা ও মেরামতযোগ্যতা দেখুন', 'நீடித்துழைப்பு, பழுதுபார்க்கும் தன்மையைப் பாருங்கள்'],
+};

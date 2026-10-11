@@ -1,0 +1,8 @@
+.git
+.local-data
+**/node_modules
+agent/.venv
+docs/screenshots
+cloud-optional
+frontend/core
+*.zip

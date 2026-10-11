@@ -1,0 +1,32 @@
+# EKS Anywhere cluster for a laptop (Docker provider, for development). Its nodes run EKS Distro, the Kubernetes
+# distribution Amazon EKS uses. Create:  eksctl anywhere create cluster -f deploy/eks-anywhere/cluster.yaml
+# (scripts/local/k8s-up.sh does this). Optional: Punarnava never needs Kubernetes to run.
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: Cluster
+metadata:
+  name: punarnava
+spec:
+  clusterNetwork:
+    cniConfig:
+      cilium: {}
+    pods:
+      cidrBlocks: [192.168.0.0/16]
+    services:
+      cidrBlocks: [10.96.0.0/12]
+  controlPlaneConfiguration:
+    count: 1
+  datacenterRef:
+    kind: DockerDatacenterConfig
+    name: punarnava
+  kubernetesVersion: "1.30"
+  managementCluster:
+    name: punarnava
+  workerNodeGroupConfigurations:
+    - count: 1
+      name: md-0
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: DockerDatacenterConfig
+metadata:
+  name: punarnava
+spec: {}

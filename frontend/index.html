@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#123b2a">
+  <meta name="description" content="Punarnava turns every repair in a local shop into a better decision for the product and a data point that tells manufacturers which part to fix.">
+  <title>Punarnava: repair first</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231d2b6b'/%3E%3Cpath d='M20 46V18h14a10 10 0 0 1 0 20h-6' fill='none' stroke='%23fff4bf' stroke-width='6' stroke-linecap='round'/%3E%3Ccircle cx='44' cy='46' r='5' fill='%230e7a52'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Manrope:wght@400;500;600;700;800&family=Baloo+2:wght@500;700;800&family=Baloo+Da+2:wght@500;700;800&family=Baloo+Thambi+2:wght@500;700;800&family=Hind:wght@400;500;600&family=Hind+Madurai:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js"></script>
+  <script>document.documentElement.dataset.theme = localStorage.getItem("pn-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");</script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+  <div id="demo-bar"></div>
+  <header class="topbar"><div class="topbar-inner" id="topbar"></div></header>
+  <main id="main" tabindex="-1"><p class="muted boot-msg" role="status"><span class="spinner" aria-hidden="true"></span> <span data-boot-msg>Loading…</span></p></main>
+  <noscript><p class="boot-msg" lang="en">Please turn on JavaScript to use Punarnava.</p><p class="boot-msg" lang="hi">पुनर्नवा चलाने के लिए जावास्क्रिप्ट चालू करें।</p><p class="boot-msg" lang="mr">पुनर्नवा वापरण्यासाठी जावास्क्रिप्ट चालू करा.</p><p class="boot-msg" lang="bn">পুনর্নবা ব্যবহার করতে জাভাস্ক্রিপ্ট চালু করুন।</p><p class="boot-msg" lang="ta">புனர்நவாவைப் பயன்படுத்த ஜாவாஸ்கிரிப்டை இயக்குங்கள்.</p></noscript>
+  <script>
+    // Before the app loads: "Loading…" in the language the app will use (?lang=, then the saved choice, then the browser).
+    (function () {
+      var L = { en: "Loading…", hi: "लोड हो रहा है…", mr: "लोड होत आहे…", bn: "লোড হচ্ছে…", ta: "ஏற்றுகிறது…" };
+      var pick = null;
+      try { var m = (location.search + location.hash).match(/[?&]lang=([a-z]{2})(?![\w-])/i); if (m && L[m[1].toLowerCase()]) pick = m[1].toLowerCase(); } catch (e) {}
+      if (!pick) { try { var s = localStorage.getItem("pn-lang"); if (L[s]) pick = s; } catch (e) {} }
+      if (!pick) { try { var ls = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language]; for (var i = 0; i < ls.length && !pick; i++) { var c = String(ls[i] || "").toLowerCase().split("-")[0]; if (L[c]) pick = c; } } catch (e) {} }
+      pick = pick || "en";
+      document.documentElement.lang = pick;
+      var el = document.querySelector("[data-boot-msg]");
+      if (el) el.textContent = L[pick];
+    })();
+  </script>
+  <nav class="tabbar" id="tabbar" aria-label="Primary"></nav>
+  <footer class="site" id="footer"></footer>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

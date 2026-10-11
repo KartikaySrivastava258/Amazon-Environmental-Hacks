@@ -1,0 +1,46 @@
+# Local Build It services for Punarnava. Run with Finch:
+#   finch compose -f local/compose.yaml up -d        (scripts/local/start.sh does this for you)
+# Docker or Podman users can run the same file with `docker compose` / `podman compose`.
+# Ports are bound to 127.0.0.1 only. No cloud credentials: LocalStack accepts the dummy "test" keys.
+name: punarnava
+
+services:
+  localstack:
+    image: localstack/localstack:3.8
+    ports:
+      - "127.0.0.1:4566:4566"
+    environment:
+      SERVICES: dynamodb,s3
+      AWS_DEFAULT_REGION: ap-south-1
+      PN_TABLE: punarnava-local
+      PN_BUCKET: punarnava-local
+    volumes:
+      - ./localstack/init/ready.d:/etc/localstack/init/ready.d:ro
+    healthcheck:
+      test: ["CMD", "bash", "-c", "awslocal dynamodb describe-table --table-name punarnava-local >/dev/null && awslocal s3api head-bucket --bucket punarnava-local"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  opensearch:
+    # OpenSearch on Amazon Corretto 21 (local/opensearch/Containerfile). To use the stock image instead, replace
+    # the two lines below with:  image: opensearchproject/opensearch:2.17.1
+    build: { context: ./opensearch, dockerfile: Containerfile }
+    image: punarnava/opensearch-corretto:2.17.1
+    ports:
+      - "127.0.0.1:9200:9200"
+    environment:
+      discovery.type: single-node
+      DISABLE_SECURITY_PLUGIN: "true"        # local only, bound to 127.0.0.1
+      DISABLE_INSTALL_DEMO_CONFIG: "true"
+      OPENSEARCH_JAVA_OPTS: "-Xms512m -Xmx512m"
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:9200/_cluster/health >/dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+volumes:
+  opensearch-data:

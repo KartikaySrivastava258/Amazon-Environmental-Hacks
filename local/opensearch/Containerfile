@@ -1,0 +1,12 @@
+# OpenSearch on Amazon Corretto 21 (instead of the JDK bundled in the OpenSearch image).
+# OpenSearch 2.x supports Java 21 and picks its JVM from OPENSEARCH_JAVA_HOME.
+# Built by Finch from local/compose.yaml; the app's /local/status and the Build It stack page report the JVM vendor
+# OpenSearch is actually running on (GET /_nodes/jvm), so this is checked, not just claimed.
+ARG OPENSEARCH_VERSION=2.17.1
+FROM amazoncorretto:21-al2023-headless AS corretto
+FROM opensearchproject/opensearch:${OPENSEARCH_VERSION}
+USER root
+COPY --from=corretto /usr/lib/jvm/java-21-amazon-corretto /opt/corretto-21
+RUN chown -R opensearch:opensearch /opt/corretto-21
+USER opensearch
+ENV OPENSEARCH_JAVA_HOME=/opt/corretto-21

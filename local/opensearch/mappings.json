@@ -1,0 +1,149 @@
+{
+  "parts": {
+    "settings": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0
+    },
+    "mappings": {
+      "dynamic": "strict",
+      "properties": {
+        "partId": {
+          "type": "keyword"
+        },
+        "category": {
+          "type": "keyword"
+        },
+        "component": {
+          "type": "keyword"
+        },
+        "brand": {
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "model": {
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "condition": {
+          "type": "keyword"
+        },
+        "price": {
+          "type": "float"
+        },
+        "area": {
+          "type": "keyword"
+        },
+        "sellerName": {
+          "type": "text"
+        },
+        "createdAt": {
+          "type": "date"
+        },
+        "text": {
+          "type": "text"
+        },
+        "demo": {
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  "listings": {
+    "settings": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0
+    },
+    "mappings": {
+      "dynamic": "strict",
+      "properties": {
+        "listingId": {
+          "type": "keyword"
+        },
+        "title": {
+          "type": "text"
+        },
+        "category": {
+          "type": "keyword"
+        },
+        "brand": {
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "model": {
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "price": {
+          "type": "float"
+        },
+        "warrantyMonths": {
+          "type": "integer"
+        },
+        "area": {
+          "type": "keyword"
+        },
+        "refurbisherName": {
+          "type": "text"
+        },
+        "createdAt": {
+          "type": "date"
+        },
+        "text": {
+          "type": "text"
+        },
+        "demo": {
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  "models": {
+    "settings": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0
+    },
+    "mappings": {
+      "dynamic": "strict",
+      "properties": {
+        "brand": {
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "model": {
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          }
+        },
+        "category": {
+          "type": "keyword"
+        },
+        "text": {
+          "type": "text"
+        }
+      }
+    }
+  }
+}

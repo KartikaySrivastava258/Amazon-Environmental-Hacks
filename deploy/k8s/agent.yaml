@@ -1,0 +1,36 @@
+# Strands Agents service. It uses an Ollama model on the host (OLLAMA_HOST in the agent-config ConfigMap, written by
+# k8s-up.sh); without it the app's assistant answers with rules only.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agent
+  labels: { app: agent }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: agent } }
+  template:
+    metadata:
+      labels: { app: agent }
+    spec:
+      securityContext: { runAsNonRoot: true, runAsUser: 1000 }
+      containers:
+        - name: agent
+          image: punarnava/agent:local
+          imagePullPolicy: Never
+          ports: [{ containerPort: 8790, name: http }]
+          env:
+            - { name: AGENT_RUNTIME, value: kubernetes }
+            - { name: AGENT_HOST, value: 0.0.0.0 }
+          envFrom:
+            - configMapRef: { name: agent-config, optional: true }
+          readinessProbe: { httpGet: { path: /health, port: http }, periodSeconds: 10 }
+          resources:
+            requests: { cpu: 100m, memory: 256Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: agent
+spec:
+  selector: { app: agent }
+  ports: [{ port: 8790, targetPort: http, name: http }]

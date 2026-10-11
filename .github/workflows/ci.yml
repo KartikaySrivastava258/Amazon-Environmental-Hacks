@@ -1,0 +1,26 @@
+# Runs the whole test suite on every push and pull request, including the Cedar engine matrix
+# (every API route x every kind of user), with the dependency versions pinned in backend/package-lock.json.
+name: CI
+on:
+  push:
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - name: Install
+        working-directory: backend
+        run: npm ci --no-audit --no-fund
+      - name: Tests (core, customers, Cedar engine, local server, voice, translations)
+        working-directory: backend
+        run: npm test
+      - name: Strict translation check (all 5 languages)
+        run: node scripts/check-i18n.mjs --strict
+      - name: Cedar policy is in sync with the API routes
+        run: node scripts/local/gen-cedar.mjs && git diff --exit-code policies/

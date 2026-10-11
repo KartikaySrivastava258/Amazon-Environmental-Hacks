@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: localstack
+  labels: { app: localstack }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: localstack } }
+  template:
+    metadata:
+      labels: { app: localstack }
+    spec:
+      containers:
+        - name: localstack
+          image: localstack/localstack:3.8
+          ports: [{ containerPort: 4566, name: edge }]
+          env:
+            - { name: SERVICES, value: "dynamodb,s3" }
+            - { name: AWS_DEFAULT_REGION, value: ap-south-1 }
+          volumeMounts:
+            - { name: init, mountPath: /etc/localstack/init/ready.d }
+          readinessProbe: { httpGet: { path: /_localstack/health, port: edge }, periodSeconds: 5 }
+          resources:
+            requests: { cpu: 100m, memory: 384Mi }
+      volumes:
+        - name: init
+          configMap: { name: localstack-init, defaultMode: 0755 }   # local/localstack/init/ready.d (k8s-up.sh)
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: localstack
+spec:
+  selector: { app: localstack }
+  ports: [{ port: 4566, targetPort: edge, name: edge }]
